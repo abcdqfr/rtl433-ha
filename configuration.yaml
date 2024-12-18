@@ -1,0 +1,25 @@
+default_config:
+
+# Load frontend
+frontend:
+
+# Enable configuration UI
+config:
+
+# Customize logging for debugging
+logger:
+  default: info
+  logs:
+    custom_components.rtl433: debug
+    homeassistant.components.config: debug
+
+# HTTP component for web interface
+http:
+  server_host: 0.0.0.0
+  server_port: 8123
+
+# Enable Home Assistant API
+api:
+
+# Enable websocket API
+websocket_api: 

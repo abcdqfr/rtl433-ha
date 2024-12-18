@@ -1,0 +1,38 @@
+# Minimal configuration with only required components
+http:
+  server_host: 0.0.0.0
+  server_port: 8123
+
+# Frontend for web interface
+frontend:
+
+# Explicitly disable non-essential services
+default_config: false
+bluetooth: false
+zeroconf: false
+dhcp: false
+ssdp: false
+usb: false
+
+# Logger configuration
+logger:
+  default: warning
+  logs:
+    custom_components.rtl433: debug
+    homeassistant.core: warning
+    homeassistant.components.bluetooth: fatal
+    homeassistant.components.hassio: fatal
+    homeassistant.components.zeroconf: fatal
+    homeassistant.components.dhcp: fatal
+    homeassistant.components.ssdp: fatal
+    homeassistant.components.usb: fatal
+    bleak: fatal
+    habluetooth: fatal
+    dbus_fast: fatal
+    __main__: fatal
+
+# RTL433 integration
+rtl433:
+  device: "0"
+  frequency: "433.92M"
+  gain: 40

@@ -1,0 +1,26 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "RTL-433 Configuration",
+                "description": "Set up your RTL-433 device",
+                "data": {
+                    "device": "Device Index (0 for first device)",
+                    "frequency": "Frequency (e.g., 433.92M)",
+                    "gain": "Gain (0-50)",
+                    "protocol_filter": "Protocol Filter (optional, comma-separated list)"
+                }
+            }
+        },
+        "error": {
+            "device_not_found": "RTL-SDR device not found",
+            "device_in_use": "RTL-SDR device is in use",
+            "process_failed": "RTL-433 process failed to start",
+            "invalid_frequency": "Invalid frequency value",
+            "invalid_gain": "Invalid gain value"
+        },
+        "abort": {
+            "already_configured": "Device is already configured"
+        }
+    }
+} 

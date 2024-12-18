@@ -1,0 +1,60 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configure RTL-433 Device",
+                "description": "Set up your RTL-SDR device to receive 433MHz signals.\n\nTips:\n• Device ID is typically 0 for the first device\n• Common frequency is 433.92M\n• Recommended gain is between 20-40\n• Protocol filter is optional (comma-separated list)",
+                "data": {
+                    "device_id": "Device ID (0 for first device)",
+                    "frequency": "Frequency (e.g., 433.92M)",
+                    "gain": "Gain (0-50)",
+                    "protocol_filter": "Protocol Filter (optional, comma-separated)"
+                }
+            }
+        },
+        "error": {
+            "invalid_device_id": "Device ID must be a number (0 for first device)",
+            "invalid_frequency": "Invalid frequency format (e.g., use 433.92M)",
+            "invalid_gain": "Gain must be between 0 and 50",
+            "device_in_use": "RTL-SDR device is in use by another application",
+            "device_not_found": "RTL-SDR device not found. Check connection and permissions.",
+            "process_failed": "rtl_433 is not installed. Please install it first.",
+            "unknown": "Unexpected error occurred. Check Home Assistant logs."
+        },
+        "abort": {
+            "already_configured": "This RTL-SDR device is already configured."
+        }
+    },
+    "entity": {
+        "sensor": {
+            "signal_strength": {
+                "name": "Signal Strength"
+            },
+            "battery": {
+                "name": "Battery"
+            },
+            "temperature": {
+                "name": "Temperature"
+            },
+            "humidity": {
+                "name": "Humidity"
+            },
+            "pressure": {
+                "name": "Pressure"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "RTL-433 Options",
+                "description": "Adjust RTL-433 device settings",
+                "data": {
+                    "frequency": "Frequency (e.g., 433.92M)",
+                    "gain": "Gain (0-50)",
+                    "protocol_filter": "Protocol Filter (optional, comma-separated)"
+                }
+            }
+        }
+    }
+} 

@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "rtl433-ha"
+version = "0.1.0"
+description = "Home Assistant integration for RTL-433 devices"
+authors = ["abcdqfr <https://github.com/abcdqfr>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "custom_components"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+homeassistant = ">=2023.12.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+pytest-asyncio = "^0.23.2"
+black = "^23.11.0"
+ruff = "^0.1.6"
+mypy = "^1.7.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = """
+    --timeout=30
+    -n auto
+    --cov=custom_components/rtl433
+    --cov-report=xml
+    --cov-report=term-missing
+    --no-cov-on-fail
+"""
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+] 
