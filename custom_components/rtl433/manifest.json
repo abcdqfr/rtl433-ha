@@ -1,10 +1,10 @@
 {
   "domain": "rtl433",
   "name": "RTL-433 Sensor",
-  "codeowners": ["@your-github-username"],
+  "codeowners": ["@abcdqfr"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/your-username/rtl433",
+  "documentation": "https://github.com/abcdqfr/rtl433-ha",
   "homekit": {},
   "iot_class": "local_push",
   "requirements": [],

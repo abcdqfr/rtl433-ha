@@ -39,16 +39,17 @@ htmlcov/
 .tox/
 
 # Home Assistant specific
-.storage
-.cloud
-.HA_VERSION
-home-assistant.log*
-home-assistant_v2.db*
-*.db-shm
-*.db-wal
-tts/
-blueprints/
+config/.storage
+config/.cloud
+config/.HA_VERSION
+config/home-assistant.log*
+config/home-assistant_v2.db*
+config/*.db-shm
+config/*.db-wal
+config/tts/
+config/blueprints/
 
 # Project specific
+logs/
 *.log
-.history/ 
+.history/

@@ -1,13 +1,26 @@
 # RTL-433 Integration TODO List
 
+## Current Focus
+
+### Device Creation and Logging
+- [ ] Test and debug device discovery process
+- [ ] Verify entity creation workflow
+- [ ] Monitor and improve logging output
+- [ ] Test signal quality assessment
+- [ ] Verify error recovery mechanisms
+
+### Testing Infrastructure
+- [ ] Set up automated testing environment
+- [ ] Create test scenarios for device discovery
+- [ ] Implement signal quality test cases
+- [ ] Add entity creation test coverage
+- [ ] Test coordinator error handling
+
 ## High Priority
 
 ### Testing Improvements
 - [x] Add docstrings to all test functions
-- [x] Split test_utils.py into specialized modules:
-  - [x] test_fixtures.py for common fixtures
-  - [x] test_cleanup.py for cleanup utilities
-  - [x] test_mocks.py for mock objects and data
+- [x] Split test_utils.py into specialized modules
 - [x] Create factory functions for common test mocks
 - [ ] Add test parametrization for different device types
 - [ ] Create test data files for different device types
@@ -18,6 +31,9 @@
 - [x] Add debug logging for troubleshooting
 - [x] Create helper functions for common operations
 - [x] Add constants for magic strings/numbers
+- [x] Clean up codebase structure and organization
+- [x] Remove duplicate files and symbolic links
+- [x] Organize development environment
 
 ### Error Handling
 - [x] Add logging rate limiting for repeated errors
@@ -31,9 +47,11 @@
 - [x] Document all test fixtures and their purposes
 - [x] Add inline comments for complex logic
 - [x] Create configuration examples
+- [x] Add development environment setup guide
 - [ ] Add troubleshooting guide
 
 ### Sensor Implementation
+- [x] Implement comprehensive logging
 - [ ] Create base sensor platform class
 - [ ] Implement sensor value validation
 - [ ] Add signal quality monitoring
@@ -84,13 +102,15 @@
 - [x] Improve error message consistency
 - [x] Add runtime type checking
 - [x] Implement better exception handling
+- [x] Clean up development environment
+- [x] Organize project structure
 
 ### Documentation
 - [x] Create component API documentation
 - [x] Add architecture overview
+- [x] Add development guidelines
 - [ ] Document common error scenarios
 - [ ] Create setup troubleshooting guide
-- [x] Add development guidelines
 
 ## Low Priority
 
@@ -115,29 +135,6 @@
 - [ ] Add security policy
 - [ ] Create user guides
 
-## New Tasks
-
-### Code Improvements
-- [ ] Add protocol-specific data validation
-- [ ] Implement device signal strength tracking
-- [ ] Add device health monitoring
-- [ ] Improve device identification logic
-- [ ] Add device metadata caching
-
-### Testing Enhancements
-- [ ] Add property-based testing for data parsing
-- [ ] Create network failure simulation tests
-- [ ] Add concurrent device testing
-- [ ] Test different RTL-SDR hardware configurations
-- [ ] Add configuration migration tests
-
-### Documentation Updates
-- [ ] Create hardware compatibility matrix
-- [ ] Add protocol support documentation
-- [ ] Create sensor value range documentation
-- [ ] Add network requirements guide
-- [ ] Create debugging flowcharts
-
 ## Completed
 - [x] Basic test infrastructure
 - [x] Socket handling for test isolation
@@ -156,3 +153,5 @@
 - [x] Value range validation
 - [x] Step size validation
 - [x] Mixed data handling
+- [x] Codebase cleanup and organization
+- [x] Development environment setup

@@ -28,7 +28,10 @@
             "temperature_C": float,
             "humidity": float,
             "battery_ok": bool,
-            # ... other sensor values
+            "pressure_mbar": float,
+            "wind_speed_m_s": float,
+            "wind_direction_deg": float,
+            "rain_mm": float
         },
         "signal_quality": {
             "rssi": float,  # dBm

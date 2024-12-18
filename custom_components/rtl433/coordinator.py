@@ -463,13 +463,38 @@ class RTL433Coordinator(DataUpdateCoordinator):
         self._track_signal_quality(unique_id, signal_quality)
 
         # Format sensor data
-        sensor_data = {
-            key: self._format_sensor_value(key, value)
-            for key, value in data.items()
-            if key not in ["model", "id", "brand", "protocol"] and value is not None
-        }
+        sensor_data = {}
+        
+        # Process temperature
+        if "temperature_C" in data:
+            sensor_data["temperature_C"] = float(data["temperature_C"])
+        elif "temperature_F" in data:
+            sensor_data["temperature_F"] = float(data["temperature_F"])
+            
+        # Process humidity
+        if "humidity" in data:
+            sensor_data["humidity"] = float(data["humidity"])
+            
+        # Process wind data
+        if "wind_avg_km_h" in data:
+            sensor_data["wind_speed_kph"] = float(data["wind_avg_km_h"])
+        if "wind_dir_deg" in data:
+            sensor_data["wind_dir_deg"] = float(data["wind_dir_deg"])
+            
+        # Process rain data
+        if "rain_mm" in data:
+            sensor_data["rain_mm"] = float(data["rain_mm"])
+            
+        # Process battery status
+        if "battery_ok" in data:
+            sensor_data["battery_ok"] = bool(data["battery_ok"])
+            
+        # Process signal metrics
+        sensor_data["rssi"] = rssi
+        sensor_data["snr"] = snr
+        sensor_data["noise"] = noise
 
-        # Add metadata
+        # Create device info
         device_info = {
             "identifiers": {(DOMAIN, unique_id)},
             "name": f"{model} Sensor {device_id}",
