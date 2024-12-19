@@ -260,3 +260,206 @@ rtl_433 -f 433.92M -g 40 -F json -M level -M time:iso -M protocol -M stats -v -C
 
 ## Integration Setup
 // ... existing setup instructions ...
+
+# Code Archaeology and Optimization
+
+## Master Diff Review Process
+
+### 1. Deep History Analysis
+```bash
+# For each major file:
+find .history -type f -name "filename_*.py" | sort -r | while read -r file; do
+    echo "=== $file ==="
+    # Extract key sections with rich context
+    grep -A 20 -B 20 "class\|def\|CONST\|@property" "$file"
+done > full_history_analysis.txt
+```
+
+### 2. Change Classification
+Organize discovered changes into categories:
+1. **Core Logic Changes**
+   - Function implementations
+   - Class structures
+   - Algorithm improvements
+   - Data flow modifications
+
+2. **Error Handling**
+   - Exception handling patterns
+   - Recovery mechanisms
+   - Validation improvements
+   - Edge case handling
+
+3. **Type Safety**
+   - Type hint evolution
+   - Input validation
+   - Return type consistency
+   - Optional handling
+
+4. **Logging & Debugging**
+   - Log level usage
+   - Context capture
+   - Debug information
+   - Error reporting
+
+5. **Performance**
+   - Resource management
+   - Memory optimization
+   - Process handling
+   - Cleanup procedures
+
+### 3. Master Diff Creation
+For each file, create a comprehensive diff showing:
+```diff
+--- original/path/file.py
++++ improved/path/file.py
+@@ -old_line,old_count +new_line,new_count @@
+ # Context lines
+-removed code
++added code
+ # More context
+```
+
+Include:
+1. Full context around changes
+2. Clear section markers
+3. Related changes grouped
+4. Dependency tracking
+
+### 4. Collaborative Review
+1. **Present Master Diff**
+   - File-by-file analysis
+   - Change categorization
+   - Impact assessment
+   - Dependency mapping
+
+2. **Review Process**
+   - Discuss each major change
+   - Evaluate improvements
+   - Consider side effects
+   - Check dependencies
+
+3. **Decision Points**
+   - Accept/reject changes
+   - Modify implementations
+   - Combine approaches
+   - Preserve critical features
+
+4. **Documentation**
+   - Record decisions
+   - Note rejected changes
+   - Track dependencies
+   - Document rationale
+
+### 5. Implementation Plan
+After review approval:
+1. Create implementation branches
+2. Apply approved changes
+3. Verify functionality
+4. Update tests
+5. Update documentation
+
+### Example Master Diff Format
+```markdown
+# File: coordinator.py
+## Category: Error Handling
+### Context: Process Management
+```diff
+@@ -100,10 +100,15 @@
+     async def _handle_process_error(self) -> None:
+-        # Basic error handling
++        # Enhanced error handling with retry logic
+         try:
+             await self._cleanup_process()
++            self._retry_count += 1
++            if self._retry_count >= self._max_retries:
++                raise UpdateFailed("Max retries exceeded")
+             await self.async_request_refresh()
+         except Exception as err:
+-            _LOGGER.error(str(err))
++            _LOGGER.error(
++                "Error during process handling: %s (attempt %d/%d)",
++                err, self._retry_count, self._max_retries
++            )
+```
+**Rationale:** Improved error handling with:
+- Retry counting
+- Maximum retry limit
+- Better error context
+- Enhanced logging
+
+## Dependencies:
+- Affects process recovery
+- Impacts coordinator state
+- Requires logging configuration
+
+## Review Questions:
+1. Is retry limit appropriate?
+2. Should we add exponential backoff?
+3. Do we need state persistence?
+4. What about partial recovery?
+```
+
+### 6. Review Checklist
+- [ ] All file histories analyzed
+- [ ] Changes categorized
+- [ ] Dependencies mapped
+- [ ] Context preserved
+- [ ] Master diffs created
+- [ ] Review completed
+- [ ] Decisions documented
+- [ ] Implementation plan approved
+
+### 7. Implementation Workflow
+1. **Create Feature Branch**
+   ```bash
+   git checkout -b feature/master-improvements
+   ```
+
+2. **Apply Changes**
+   - Follow approved master diff
+   - Maintain context
+   - Preserve dependencies
+   - Update related code
+
+3. **Verification**
+   ```bash
+   # Run tests
+   pytest tests/
+   
+   # Check typing
+   mypy .
+   
+   # Verify logging
+   grep -r "_LOGGER" .
+   ```
+
+4. **Documentation**
+   - Update CHANGELOG
+   - Record decisions
+   - Note improvements
+   - Document patterns
+
+### 8. Best Practices
+1. **Change Management**
+   - Keep changes atomic
+   - Track dependencies
+   - Document rationale
+   - Preserve context
+
+2. **Review Process**
+   - Discuss each change
+   - Consider alternatives
+   - Check side effects
+   - Verify improvements
+
+3. **Implementation**
+   - Follow approved diff
+   - Maintain consistency
+   - Update related code
+   - Verify functionality
+
+4. **Documentation**
+   - Record decisions
+   - Note improvements
+   - Update guides
+   - Track patterns

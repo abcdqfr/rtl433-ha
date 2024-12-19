@@ -338,19 +338,28 @@ class RTL433Coordinator(DataUpdateCoordinator):
                 # First try to reset the USB device
                 def _reset_usb():
                     try:
-                        # Try rtl_eeprom reset first (most portable)
+                        # Try to reset USB device using usb_reset
                         subprocess.run(
-                            ["rtl_eeprom", "-d", str(self.device_id)],
+                            ["usb_reset", f"/dev/bus/usb/{self.device_id}"],
                             capture_output=True,
                             text=True,
                             timeout=5
                         )
-                    except subprocess.SubprocessError:
-                        # If that fails, try to unload and reload the driver
-                        subprocess.run(["rmmod", "rtl2832_sdr"], capture_output=True)
-                        subprocess.run(["rmmod", "dvb_usb_rtl28xxu"], capture_output=True)
-                        subprocess.run(["modprobe", "rtl2832_sdr"], capture_output=True)
-                        subprocess.run(["modprobe", "dvb_usb_rtl28xxu"], capture_output=True)
+                    except (subprocess.SubprocessError, FileNotFoundError):
+                        try:
+                            # Fallback to rtl_eeprom reset
+                            subprocess.run(
+                                ["rtl_eeprom", "-d", str(self.device_id)],
+                                capture_output=True,
+                                text=True,
+                                timeout=5
+                            )
+                        except subprocess.SubprocessError:
+                            # If both fail, try to unload and reload the driver
+                            subprocess.run(["rmmod", "rtl2832_sdr"], capture_output=True)
+                            subprocess.run(["rmmod", "dvb_usb_rtl28xxu"], capture_output=True)
+                            subprocess.run(["modprobe", "rtl2832_sdr"], capture_output=True)
+                            subprocess.run(["modprobe", "dvb_usb_rtl28xxu"], capture_output=True)
                 
                 await self.hass.async_add_executor_job(_reset_usb)
                 
@@ -463,36 +472,11 @@ class RTL433Coordinator(DataUpdateCoordinator):
         self._track_signal_quality(unique_id, signal_quality)
 
         # Format sensor data
-        sensor_data = {}
-        
-        # Process temperature
-        if "temperature_C" in data:
-            sensor_data["temperature_C"] = float(data["temperature_C"])
-        elif "temperature_F" in data:
-            sensor_data["temperature_F"] = float(data["temperature_F"])
-            
-        # Process humidity
-        if "humidity" in data:
-            sensor_data["humidity"] = float(data["humidity"])
-            
-        # Process wind data
-        if "wind_avg_km_h" in data:
-            sensor_data["wind_speed_kph"] = float(data["wind_avg_km_h"])
-        if "wind_dir_deg" in data:
-            sensor_data["wind_dir_deg"] = float(data["wind_dir_deg"])
-            
-        # Process rain data
-        if "rain_mm" in data:
-            sensor_data["rain_mm"] = float(data["rain_mm"])
-            
-        # Process battery status
-        if "battery_ok" in data:
-            sensor_data["battery_ok"] = bool(data["battery_ok"])
-            
-        # Process signal metrics
-        sensor_data["rssi"] = rssi
-        sensor_data["snr"] = snr
-        sensor_data["noise"] = noise
+        sensor_data = {
+            key: self._format_sensor_value(key, value)
+            for key, value in data.items()
+            if key not in ["model", "id", "brand", "protocol"] and value is not None
+        }
 
         # Create device info
         device_info = {

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Example Code History Analysis Configuration
+# 
+# This example shows how to analyze Home Assistant component code,
+# but the tool can be used for any type of source files.
+#
+# Usage: ./code-historian [options]
+
+# Default settings
+HISTORY_DIR=".history"
+SOURCE_DIR="src"
+OUTPUT_DIR="docs/history"
+
+# Example 1: Analyze Python Home Assistant components
+echo "Analyzing Home Assistant components..."
+code-historian \
+    --history-dir "$HISTORY_DIR" \
+    --source-dir "$SOURCE_DIR" \
+    --output-dir "$OUTPUT_DIR/ha" \
+    --files "coordinator,sensor,const" \
+    --ext py
+
+# Example 2: Analyze JavaScript frontend files
+echo "Analyzing frontend code..."
+code-historian \
+    --history-dir "$HISTORY_DIR" \
+    --source-dir "frontend/src" \
+    --output-dir "$OUTPUT_DIR/frontend" \
+    --files "app,components/dashboard,store/index" \
+    --ext js
+
+# Example 3: Analyze configuration files
+echo "Analyzing configuration files..."
+code-historian \
+    --history-dir "$HISTORY_DIR" \
+    --source-dir "config" \
+    --output-dir "$OUTPUT_DIR/config" \
+    --files "configuration,automations,scripts" \
+    --ext yaml

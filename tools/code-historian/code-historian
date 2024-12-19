@@ -1,0 +1,202 @@
+#!/bin/bash
+
+# Code Historian
+#
+# A standalone script for analyzing code evolution in software projects.
+# Tracks changes in source files and categorizes them according to 
+# customizable patterns and categories.
+#
+# Usage: ./code-historian [options]
+
+# Colors for better readability
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Default settings
+HISTORY_DIR=".history"
+SOURCE_DIR="src"
+OUTPUT_DIR="docs/history"
+FILES=""
+EXTENSION=""
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            echo "Code Historian - Code Evolution Analysis"
+            echo
+            echo "Usage: $0 [options]"
+            echo
+            echo "Options:"
+            echo "  -h, --help                Show this help message"
+            echo "  --history-dir DIR         Set history directory (default: .history)"
+            echo "  --source-dir DIR          Set source directory (default: src)"
+            echo "  --output-dir DIR          Set output directory (default: docs/history)"
+            echo "  --files FILE1,FILE2,...   Specify files to analyze (without extension)"
+            echo "  --ext EXTENSION           File extension to analyze (e.g., py, js, cpp)"
+            echo
+            echo "Examples:"
+            echo "  $0 --files coordinator,sensor --ext py"
+            echo "  $0 --files app,router --ext js"
+            echo "  $0 --files main,utils --ext cpp"
+            exit 0
+            ;;
+        --history-dir)
+            HISTORY_DIR="$2"
+            shift 2
+            ;;
+        --source-dir)
+            SOURCE_DIR="$2"
+            shift 2
+            ;;
+        --output-dir)
+            OUTPUT_DIR="$2"
+            shift 2
+            ;;
+        --files)
+            FILES="$2"
+            shift 2
+            ;;
+        --ext)
+            EXTENSION="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Validate required parameters
+if [ -z "$FILES" ]; then
+    echo "Error: --files parameter is required"
+    exit 1
+fi
+
+# Default categories based on common software patterns
+CATEGORIES=(
+    "Architecture"      # Major structural changes
+    "API"              # Interface changes
+    "Logic"            # Business logic modifications
+    "Data"             # Data structure changes
+    "Error Handling"   # Exception and error management
+    "Logging"          # Logging and monitoring
+    "Documentation"    # Comments and docs
+    "Testing"          # Test-related changes
+    "Performance"      # Optimization changes
+    "Security"         # Security-related updates
+)
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Process each file
+IFS=',' read -ra FILE_ARRAY <<< "$FILES"
+for file in "${FILE_ARRAY[@]}"; do
+    echo -e "${BLUE}Analyzing $file${EXTENSION:+.$EXTENSION}...${NC}"
+    
+    # Find all versions in history
+    if [ -n "$EXTENSION" ]; then
+        history_files=$(find "$HISTORY_DIR" -type f -name "${file}.${EXTENSION}" | sort)
+    else
+        history_files=$(find "$HISTORY_DIR" -type f -name "${file}.*" | sort)
+    fi
+    
+    # Generate analysis for each file
+    OUTPUT_FILE="$OUTPUT_DIR/${file}_changes.md"
+    echo "# Code Evolution Analysis for $file${EXTENSION:+.$EXTENSION}" > "$OUTPUT_FILE"
+    echo "Generated: $(date)" >> "$OUTPUT_FILE"
+    echo >> "$OUTPUT_FILE"
+    
+    # Process history files
+    prev_file=""
+    for history_file in $history_files; do
+        if [ ! -z "$prev_file" ]; then
+            echo "## Changes at $(basename "$(dirname "$history_file")")" >> "$OUTPUT_FILE"
+            echo >> "$OUTPUT_FILE"
+            
+            # Generate diff
+            diff_output=$(diff -u "$prev_file" "$history_file" | tail -n +3)
+            if [ ! -z "$diff_output" ]; then
+                echo '```diff' >> "$OUTPUT_FILE"
+                echo "$diff_output" >> "$OUTPUT_FILE"
+                echo '```' >> "$OUTPUT_FILE"
+                echo >> "$OUTPUT_FILE"
+                
+                # Analyze changes for categories
+                for category in "${CATEGORIES[@]}"; do
+                    case $category in
+                        "Architecture")
+                            if grep -q "class\|interface\|struct\|namespace\|module" <<< "$diff_output"; then
+                                echo "- **$category**: Structural changes detected" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "API")
+                            if grep -q "function\|method\|export\|public\|interface" <<< "$diff_output"; then
+                                echo "- **$category**: API changes detected" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Logic")
+                            if grep -q "if\|else\|switch\|case\|for\|while" <<< "$diff_output"; then
+                                echo "- **$category**: Logic flow modified" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Data")
+                            if grep -q "type\|interface\|class\|struct\|enum\|const" <<< "$diff_output"; then
+                                echo "- **$category**: Data structure changes" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Error Handling")
+                            if grep -q "try\|catch\|throw\|error\|except\|finally" <<< "$diff_output"; then
+                                echo "- **$category**: Error handling improved" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Logging")
+                            if grep -q "log\|debug\|info\|warning\|error\|console" <<< "$diff_output"; then
+                                echo "- **$category**: Logging changes detected" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Documentation")
+                            if grep -q "/\*\|//\|#\|\"\"\"" <<< "$diff_output"; then
+                                echo "- **$category**: Documentation updated" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Testing")
+                            if grep -q "test\|assert\|expect\|should\|mock" <<< "$diff_output"; then
+                                echo "- **$category**: Test changes detected" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Performance")
+                            if grep -q "cache\|optimize\|performance\|memory\|speed" <<< "$diff_output"; then
+                                echo "- **$category**: Performance improvements" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                        "Security")
+                            if grep -q "security\|auth\|crypto\|password\|token" <<< "$diff_output"; then
+                                echo "- **$category**: Security updates" >> "$OUTPUT_FILE"
+                            fi
+                            ;;
+                    esac
+                done
+                echo >> "$OUTPUT_FILE"
+            fi
+        fi
+        prev_file="$history_file"
+    done
+done
+
+# Generate summary
+SUMMARY_FILE="$OUTPUT_DIR/SUMMARY.md"
+echo "# Code Evolution Summary" > "$SUMMARY_FILE"
+echo "Generated: $(date)" >> "$SUMMARY_FILE"
+echo >> "$SUMMARY_FILE"
+
+echo "## Analyzed Files" >> "$SUMMARY_FILE"
+for file in "${FILE_ARRAY[@]}"; do
+    echo "- [${file}${EXTENSION:+.$EXTENSION}](${file}_changes.md)" >> "$SUMMARY_FILE"
+done
+
+echo -e "${GREEN}Analysis complete! Results saved in $OUTPUT_DIR${NC}" 

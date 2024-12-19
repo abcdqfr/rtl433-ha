@@ -53,3 +53,8 @@ config/blueprints/
 logs/
 *.log
 .history/
+docs/master_changes___init__.md
+docs/master_changes_const.md
+docs/master_changes_sensor.md
+docs/master_changes_coordinator.md
+docs/master_changes_config_flow.md

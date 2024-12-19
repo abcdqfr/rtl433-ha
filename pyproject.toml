@@ -5,7 +5,7 @@ description = "Home Assistant integration for RTL-433 devices"
 authors = ["abcdqfr <https://github.com/abcdqfr>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "custom_components"}]
+packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
@@ -30,7 +30,7 @@ python_files = ["test_*.py"]
 addopts = """
     --timeout=30
     -n auto
-    --cov=custom_components/rtl433
+    --cov=src/custom_components/rtl433
     --cov-report=xml
     --cov-report=term-missing
     --no-cov-on-fail
@@ -38,4 +38,21 @@ addopts = """
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
-] 
+]
+
+[tool.ruff]
+src = ["src"]
+line-length = 88
+target-version = "py311"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true 

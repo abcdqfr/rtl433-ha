@@ -14,6 +14,8 @@ from .const import (
     CONF_FREQUENCY,
     CONF_GAIN,
     CONF_PROTOCOL_FILTER,
+    DEFAULT_FREQUENCY,
+    DEFAULT_GAIN,
 )
 from .coordinator import RTL433Coordinator
 
@@ -28,6 +30,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up RTL-433 from a config entry."""
+    _LOGGER.debug("Setting up RTL-433 integration from config entry")
+
     try:
         device_id = entry.data.get(CONF_DEVICE_ID, entry.data.get('device'))
         if device_id is None:
@@ -39,8 +43,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = RTL433Coordinator(
         hass,
         device_id=device_id,
-        frequency=entry.data[CONF_FREQUENCY],
-        gain=entry.data[CONF_GAIN],
+        frequency=entry.data.get(CONF_FREQUENCY, DEFAULT_FREQUENCY),
+        gain=entry.data.get(CONF_GAIN, DEFAULT_GAIN),
         protocol_filter=entry.data.get(CONF_PROTOCOL_FILTER),
     )
 

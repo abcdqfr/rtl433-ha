@@ -572,3 +572,54 @@ mypy custom_components/rtl433/
    - Manual protocol filtering
    - Basic signal processing
    - Limited device configuration
+
+## Development Environment Setup
+
+### Method 1: Development Install (Recommended)
+```bash
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install in development mode
+pip install -e .
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Start Home Assistant with debug logging
+./debug.sh
+```
+
+### Method 2: Direct Copy (Alternative)
+```bash
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# The debug.sh script will:
+# 1. Copy component files to config/custom_components/
+# 2. Start Home Assistant with debug logging
+./debug.sh
+```
+
+### Why Two Methods?
+
+1. **Development Install (`pip install -e .`)**
+   - Creates proper Python package installation
+   - Automatically handles Python path
+   - Better for IDE integration
+   - Standard Python development practice
+   - Easier dependency management
+   - Works with multiple HA instances
+
+2. **Direct Copy**
+   - Simpler to understand
+   - Mirrors real-world manual installation
+   - Good for testing installation procedures
+   - Useful for final integration testing
+
+Choose the method that best suits your workflow. The development install is recommended for active development, while the direct copy method is useful for installation testing.
